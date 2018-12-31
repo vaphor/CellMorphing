@@ -8,8 +8,12 @@ Licence: GPL
 Input: a smt2 file produced by hornconverter. (horn clauses with
 arrays)
 Output: a smt2 file without array variables 
+(warnings like Warning : no arguments for composition with head check-sat...
+ can be ignored)
 
 Usage: ./vaphor [options] file
+
+
 
 Example : ./vaphor demo.smt2 -o demo_2.smt2
 
