@@ -1,18 +1,3 @@
-(*This file is part of Vaphor
-
-    Vaphor is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Vaphor is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Vaphor.  If not, see <https://www.gnu.org/licenses/>. *)
-
 (*In this file, we give the abstraction of SAS2016 and we abstract the operations*)
 
 open Types
@@ -94,6 +79,8 @@ let absdistinct n =
                              andExpr valEquals
                              ]
                            ] in
+                           
+                         (*List.map (fun c -> andExpr [general_condition; c]) (matchedcases @ unmatchedcase) in*)
                          andExpr([general_condition; func_call "or" (matchedcases @ unmatchedcase)]) in
                          (suggested_var, abstract_op)
                      | _ -> failwith (Printf.sprintf "store requires three parameters. Given %s" (printList (fun e -> Printf.sprintf "(%s : %s)" (printExpr e) (printType (deduceType e))) params " "))
@@ -108,6 +95,11 @@ let absdistinct n =
                        (*Description of how to abstract the operation*)
                        let abstract_op created_var predicates =
                          let new_var = Variable(created_var) in
+                         (*let general_condition = 
+                             (*index of the new var is equal to the index of the old var*)
+                             andExpr (listCreate (fun i -> func_call "=" [Extract(Extract(new_var, i), 0); 
+                                                                          Extract(Extract(tab, i), 0)]) n) in*)
+                         
                          
                          let res = func_call "or"
                          [
@@ -239,6 +231,19 @@ let absdistinct n =
                            For example, if the predicate is P(tab = ((i0, v0), i1, v1)) insert_pos = 1 and del = 1, we get P((i0, v0), (index, new_var))
                                         if the predicate is P(tab = ((i0, v0), i1, v1)) insert_pos = 0 and del = 1, we get P((index, new_var), (i0, v0))
                          *)
+                         (*let fpredicates insert_pos del =
+                           List.flatten (List.map (fun p -> match p with
+                             | Predicate(f, l) -> [Predicate(f, List.map 
+                               (fun e -> match e with
+                                | t when t = tab -> 
+                                    let basicArgList = listCreate (fun i -> Extract(tab, i)) n in
+                                    let deletedArgList = listRemove basicArgList del in
+                                    let newinsert_pos = (if insert_pos > del then insert_pos-1 else insert_pos) in
+                                    let finalList = listInsert deletedArgList (TupleE([index; new_var])) newinsert_pos in
+                                    TupleE(finalList)  
+                                | _ -> e
+                               ) l)]
+                             | _ -> []) predicates) in*)
 
                          let fpredicates insert_pos del = List.flatten (List.map (fun cond -> 
                           let tmp = exprMap 
@@ -286,6 +291,8 @@ let absdistinct n =
                             
                             
                       in
+                           
+                         (*List.map (fun c -> andExpr [c]) (matchedcases @ unmatchedcases) in*)
                          func_call "or" (matchedcases @ unmatchedcases) in
                          (suggested_var, abstract_op)
                      | _ -> failwith (Printf.sprintf "select requires two parameters. Given %s" (printList (fun e -> Printf.sprintf "(%s : %s)" (printExpr e) (printType (deduceType e))) params " "))

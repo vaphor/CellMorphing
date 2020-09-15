@@ -1,18 +1,3 @@
-(*This file is part of Vaphor
-
-    Vaphor is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Vaphor is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Vaphor.  If not, see <https://www.gnu.org/licenses/>. *)
-
 (*In this file, we interpret the well parenthesized expressions : expressions starting with declare-fun and assert.*)
 
 open Helper
@@ -191,6 +176,21 @@ let rec parse_command var_type_context predicate_map command =
               (*Global information on a variable type*)
               begin
               match q with
+              (*| Interpreted("|tuple")::Composition(varlist)::Interpreted("|")::return::[] -> 
+                  let vartype = (try
+                                     convert_type return
+                               with
+                               | Failure(error) -> failwith (Printf.sprintf "Error while converting %s as type
+                                                                      within command %s.
+                                                                      Error message : %s" (printExpr return) (printCommand command) error)) in
+                  let vlist = List.map (fun varname ->
+                    match varname with
+                    | Interpreted(name) -> {
+                                                  vname = name; 
+                                                  vtype = vartype;
+                                           }
+                    | _ -> failwith "In tuple variable declaration, not a variable name" ) varlist in
+                  (List.fold_left (fun var_type_ctx mvar -> SMap.add mvar.vname mvar var_type_ctx) var_type_context vlist, predicate_map, Comment("Var decl"))*)
               | Interpreted(name)::return::[] -> let mvar = (try {
                                                         vname = name; 
                                                         vtype = convert_type return

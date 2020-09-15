@@ -1,19 +1,3 @@
-(*This file is part of Vaphor
-
-    Vaphor is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Vaphor is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Vaphor.  If not, see <https://www.gnu.org/licenses/>. *)
-
-
 (*
 In this file, we give the main function of the program.
 The goal of the program is to convert a horn problem in smt2 format 
@@ -130,9 +114,12 @@ let _  =
     (*Getting simplified horn string*)
     let str_final = (print_simplified final) in
     if cf.debug then Printf.printf "Printing final expression :\n%s\n\n\n" str_final;
-
-    let outfile = open_out cf.outputsmt_name in
-    Printf.fprintf outfile "%s" str_final;
+    
+    if cf.outputsmt_name="stdout" then
+      Printf.printf "%s" str_final
+    else
+      let outfile = open_out cf.outputsmt_name in
+      Printf.fprintf outfile "%s" str_final;
   with
     (*Whenever an exception is thrown, print expression and backtrace (empty if debug = false), and exit with -1 status*)
     | e -> Printf.printf "\n\nException : %s %s\n\n" (Printexc.to_string e) (Printexc.get_backtrace ()); exit (-1)

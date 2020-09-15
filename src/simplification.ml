@@ -1,18 +1,3 @@
-(*This file is part of Vaphor
-
-    Vaphor is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Vaphor is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Vaphor.  If not, see <https://www.gnu.org/licenses/>. *)
-
 (*In this file, we simplify expressions (we remove tuples, ...) *)
 
 open Types
@@ -147,11 +132,11 @@ let msimplify expr =
   simplify_and (simplify_or expr)
 
 let print_simplified horn =
-  Printf.sprintf "(set-logic HORN)\n%s\n(check-sat)\n"
+  Printf.sprintf "%s\n"
   (printList (fun c -> match c with
              | Comment(str) -> Printf.sprintf ";%s" str
              | Unparsed(expr) -> printExpr expr
-             | Fundecl(f) -> if f.return = Basic("Bool") then Printf.sprintf "(declare-rel %s (%s))" f.fname (printList printType f.params " ") else failwith "Return type of function is not bool"
+             | Fundecl(f) -> if f.return = Basic("Bool") then Printf.sprintf "(declare-fun %s (%s) Bool)" f.fname (printList printType f.params " ") else failwith "Return type of function is not bool"
              | Clause(local_var, conds, res) -> let printexp = printExpr (msimplify (func_call "=>" [(func_call "and" conds); res])) in
                                                 Printf.sprintf "(assert %s)" 
                                                 (if SMap.is_empty local_var then printexp 
