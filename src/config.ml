@@ -7,6 +7,7 @@ type config_t = {
   distinct_i:int;
   debug:bool;
   version:string;
+  lists:bool;
 }
 exception Version
 exception Usage of string
@@ -15,6 +16,7 @@ exception NotFound of string
 
 let set_outputsmt config (s:string) = config := {!config with outputsmt_name=s}
 let set_debug config () = config := {!config with debug=true}
+let set_lists config () = config := {!config with lists=true}
 
 let set_fname config (s:string) =  
   if Sys.file_exists s
@@ -31,6 +33,7 @@ let make_default_config () = {
   outputsmt_name="stdout";
   distinct_i = 1;
   debug=false;
+  lists=false;
   version="1.2 Sept 2016";
 }
 			       
@@ -43,6 +46,7 @@ let read_args () =
     [
       ("--version",Arg.Unit (fun () -> fprintf std_formatter "vaphor Version %s@." !cf.version ; raise(Version)),": print version and exit");
       ("-debug", Arg.Unit (set_debug cf) ,": all debug info");
+      ("-lists", Arg.Unit (set_lists cf) ,": treats arrays as lists with operations such as insert");
       ("-distinct", Arg.Int (set_di cf) ,": #distinguished elements in abstraction");
       ("-o", Arg.String (set_outputsmt cf) ,": outputfile, default is res.smt2");
     ] in
