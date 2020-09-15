@@ -93,7 +93,7 @@ let _  =
     
 
     (*Abstraction we use*)
-    let mabstraction = absdistinctsize (cf.distinct_i) in
+    let mabstraction = absdistinct (cf.distinct_i) in
 
     (*We now retrieve the abstract operations and we apply alpha (the abstraction for types) *)
     let transformed = (transformHorn mabstraction converted) in

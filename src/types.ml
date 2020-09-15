@@ -103,7 +103,7 @@ let rec printExpr expr =
                             if List.hd exprs = Interpreted("and") then Printf.sprintf "true"
                             else
                             begin
-                             Printf.printf "Warning : no arguments for composition with head %s...\n" (printExpr (List.hd exprs));
+                             (*Printf.printf "Warning : no arguments for composition with head %s...\n" (printExpr (List.hd exprs));*)
                              Printf.sprintf "(%s)" (printList printExpr exprs " ")
                             end
                          end
